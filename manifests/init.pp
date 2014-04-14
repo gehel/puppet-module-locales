@@ -1,4 +1,8 @@
 class locales($default="en_US.UTF-8", $available=["en_US.UTF-8 UTF-8"]) {
+  Exec {
+    path        => '/usr/sbin:/usr/bin:/sbin:/bin',
+  }
+
   package { locales:
     ensure => present,
   }
@@ -8,16 +12,16 @@ class locales($default="en_US.UTF-8", $available=["en_US.UTF-8 UTF-8"]) {
   }
 
   file { "/etc/default/locale":
-    content => inline_template('<%= default + "\n" %>'),
+    content => inline_template('LANG=<%= default + "\n" %>'),
   }
 
   exec { "locale-gen":
-    subscribe => [File["/etc/locale.gen"], File["/etc/default/locale"]],
+    subscribe   => [File["/etc/locale.gen"], File["/etc/default/locale"]],
     refreshonly => true,
   }
 
   exec { "update-locale":
-    subscribe => [File["/etc/locale.gen"], File["/etc/default/locale"]],
+    subscribe   => [File["/etc/locale.gen"], File["/etc/default/locale"]],
     refreshonly => true,
   }
 
